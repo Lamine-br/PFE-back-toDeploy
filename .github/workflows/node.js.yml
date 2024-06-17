@@ -19,8 +19,8 @@ jobs:
         id: detect-changes
         run: ./.github/scripts/detect-changes.sh
         env:
-        BEFORE: ${{ github.event.before }}
-        SHA: ${{ github.sha }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
 
   build:
     needs: detect-changes
