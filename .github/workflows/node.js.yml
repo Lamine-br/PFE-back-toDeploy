@@ -29,3 +29,18 @@ jobs:
         run: |
           npm i
           npm run
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image for api_gateway
+        working-directory: ./api_gateway
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/api_gateway:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/api_gateway:latest
+
+      - name: Build and push Docker image for service_registry
+        working-directory: ./service_registry
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/service_registry:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/service_registry:latest
