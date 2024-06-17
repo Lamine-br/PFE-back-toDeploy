@@ -18,6 +18,9 @@ jobs:
       - name: Detect changed directories
         id: detect-changes
         run: ./.github/scripts/detect-changes.sh
+        env:
+        BEFORE: ${{ github.event.before }}
+        SHA: ${{ github.sha }}
 
   build:
     needs: detect-changes
