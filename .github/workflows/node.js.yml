@@ -16,14 +16,24 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
       - name: Build and test api_gateway
+        working-directory: ./api_gateway
         run: |
-          npm i
-          npm run build 
+          npm ci
+          npm run build
           npm test
 
       - name: Build and test service_registry
+        working-directory: ./service_registry
         run: |
-          npm i
-          npm run build 
+          npm ci
+          npm run build
           npm test
