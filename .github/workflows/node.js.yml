@@ -17,14 +17,12 @@ jobs:
 
     steps:
       - name: Build and test api_gateway
-        working-directory: ./api_gateway
         run: |
           npm i
           npm run build 
           npm test
 
       - name: Build and test service_registry
-        working-directory: ./service_registry
         run: |
           npm i
           npm run build 
