@@ -1,17 +1,24 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed_dirs: ${{ steps.detect-changes.outputs.changed_dirs }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect changed directories
+        id: detect-changes
+        run: ./.github/scripts/detect-changes.sh
 
+  build:
+    needs: detect-changes
     runs-on: ubuntu-latest
 
     strategy:
@@ -20,12 +27,25 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Build and test api_gateway
+        if: contains(env.changed_dirs, 'api_gateway')
+        working-directory: api_gateway
+        run: |
+          npm ci
+          npm run build --if-present
+          npm test
+
+      - name: Build and test service_registry
+        if: contains(env.changed_dirs, 'service_registry')
+        working-directory: service_registry
+        run: |
+          npm ci
+          npm run build --if-present
+          npm test
