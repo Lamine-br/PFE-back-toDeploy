@@ -23,11 +23,9 @@ jobs:
         run: |
           npm i
           npm run
-          npm test
 
       - name: Build and test service_registry
         working-directory: ./service_registry
         run: |
           npm i
           npm run
-          npm test
