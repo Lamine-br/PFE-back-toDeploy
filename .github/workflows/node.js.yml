@@ -51,3 +51,4 @@ jobs:
           npm ci
           npm run build --if-present
           npm test
+          
