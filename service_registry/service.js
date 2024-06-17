@@ -1,6 +1,6 @@
 const express = require("express");
 const service = express();
-const ServiceRegistry = require("./lib/ServiceRegistry");
+const ServiceRegistry = require("./Registry/ServiceRegistry");
 
 const PORT = 3001;
 
@@ -26,7 +26,6 @@ service.put(
 		return res.json({ result: serviceKey });
 	}
 );
-
 
 service.delete(
 	"/unregister/:servicename/:serviceversion/:serviceport",
