@@ -13,6 +13,8 @@ jobs:
       changed_dirs: ${{ steps.detect-changes.outputs.changed_dirs }}
     steps:
       - uses: actions/checkout@v4
+      - name: Grant execute permission for detect-changes.sh
+        run: chmod +x ./.github/scripts/detect-changes.sh
       - name: Detect changed directories
         id: detect-changes
         run: ./.github/scripts/detect-changes.sh
