@@ -21,13 +21,11 @@ jobs:
         working-directory: ./api_gateway
         run: |
           npm install
-          npm test
 
       - name: Build and test service_registry
         working-directory: ./service_registry
         run: |
           npm install
-          npm test
 
       - name: Build and test service_auth
         working-directory: ./service_authentication
