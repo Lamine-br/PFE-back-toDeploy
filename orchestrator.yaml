@@ -64,8 +64,7 @@ spec:
   selector:
     app: service-registry
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 3001
       targetPort: 3001
       nodePort: 31001
   type: NodePort # Add this line if you want to expose the service externally
@@ -100,8 +99,7 @@ spec:
   selector:
     app: service-auth
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 3002
       targetPort: 3002
       nodePort: 31002
   type: NodePort # Add this line if you want to expose the service externally
