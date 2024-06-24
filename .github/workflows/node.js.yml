@@ -31,7 +31,7 @@ jobs:
           npm run
 
       - name: Build and test service_auth
-        working-directory: ./service_authentification
+        working-directory: ./service_authentication
         run: |
           npm i
           npm run
@@ -52,7 +52,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/service_registry:latest
 
       - name: Build and push Docker image for service_auth
-        working-directory: ./service_authentification
+        working-directory: ./service_authentication
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/service_auth:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/service_auth:latest
