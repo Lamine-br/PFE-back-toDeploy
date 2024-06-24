@@ -1,5 +1,5 @@
-const Employeur = require("../../models/employeur");
-const Contact = require("../../models/contact");
+const Employeur = require("../models/employeur");
+const Contact = require("../models/contact");
 
 const employeurController = {
 	getEmployeur: async (req, res) => {
