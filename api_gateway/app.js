@@ -9,7 +9,7 @@ const PORT = 3000;
 app.use(cors({ origin: "*" }));
 
 app.get("/", (req, res) => {
-	res.send("Hello, Express!");
+	res.send("Hello, Express 2!");
 });
 
 app.use((req, res, next) => {
@@ -86,7 +86,6 @@ app.get("/services/:name", async (req, res) => {
 			.json({ message: "Erreur lors de la récupération de la photo" });
 	}
 });
-
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
