@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v4
@@ -21,20 +20,20 @@ jobs:
       - name: Build and test api_gateway
         working-directory: ./api_gateway
         run: |
-          npm i
-          npm run
+          npm install
+          npm test
 
       - name: Build and test service_registry
         working-directory: ./service_registry
         run: |
-          npm i
-          npm run
+          npm install
+          npm test
 
       - name: Build and test service_auth
         working-directory: ./service_authentication
         run: |
-          npm i
-          npm run
+          npm install
+          npm test
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -56,3 +55,23 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/service_auth:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/service_auth:latest
+
+      - name: Setup Minikube
+        uses: medyagh/setup-minikube@master
+        with:
+          minikube-version: "latest"
+          kubernetes-version: "v1.23.3"
+          driver: docker
+
+      - name: Start Minikube
+        run: minikube start --wait=true
+
+      - name: Verify Minikube Cluster
+        run: kubectl get pods -A
+
+      - name: Deploy to Minikube
+        run: kubectl apply -f orchestrator.yaml
+
+      - name: Test Service URLs
+        run: |
+          minikube service list
