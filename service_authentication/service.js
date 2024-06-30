@@ -45,8 +45,8 @@ const startRegistration = (serviceName, serviceVersion, servicePort) => {
 	}, 5000); // Retry every 5 seconds
 };
 
-registerService("auth", "v1", PORT);
+registerService("auth", "v1", 31002);
 
-startRegistration("auth", "v1", PORT);
+startRegistration("auth", "v1", 31002);
 
 service.listen(PORT, () => console.log("Service is running at port " + PORT));

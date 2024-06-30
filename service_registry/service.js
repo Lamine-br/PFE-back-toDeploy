@@ -12,9 +12,7 @@ service.put(
 	(req, res) => {
 		const { servicename, serviceversion, serviceport } = req.params;
 
-		const serviceip = req.socket.remoteAddress.includes("::")
-			? `[${req.socket.remoteAddress}]`
-			: req.socket.remoteAddress;
+		const serviceip = "192.168.49.2";
 
 		const serviceKey = serviceRegisrty.register(
 			servicename,
@@ -32,9 +30,7 @@ service.delete(
 	(req, res) => {
 		const { servicename, serviceversion, serviceport } = req.params;
 
-		const serviceip = req.socket.remoteAddress.includes("::")
-			? `[${req.socket.remoteAddress}]`
-			: req.socket.remoteAddress;
+		const serviceip = "192.168.49.2";
 
 		const serviceKey = serviceRegisrty.unregister(
 			servicename,
