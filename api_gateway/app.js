@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 async function fetchServiceUrlFromRegistry(servicename, serviceversion) {
 	try {
 		const response = await axios.get(
-			`http://service_registry:31001/find/${servicename}/${serviceversion}`
+			`http://192.168.49.2:31001/find/${servicename}/${serviceversion}`
 		);
 		return response.data; // Assuming the response is a single service URL
 	} catch (error) {
@@ -41,6 +41,8 @@ const services = [
 	// Add more services as needed
 ];
 
+let serviceProxies = {};
+
 async function createServiceProxy(service) {
 	const serviceInfo = await fetchServiceUrlFromRegistry(
 		service.name,
@@ -54,6 +56,7 @@ async function createServiceProxy(service) {
 		});
 		console.log(`Service ${service.name} URL:`, serviceUrl);
 		app.use(service.path, serviceProxy);
+		serviceProxies[service.name] = serviceProxy;
 	} else {
 		console.log(`Service ${service.name} not found in registry.`);
 	}
@@ -67,6 +70,41 @@ async function createProxies() {
 }
 
 createProxies();
+
+// Periodic service verification every 5 seconds
+setInterval(async () => {
+	for (const service of services) {
+		const serviceInfo = await fetchServiceUrlFromRegistry(
+			service.name,
+			service.version
+		);
+		if (serviceInfo) {
+			const serviceUrl = `http://${serviceInfo.ip}:${serviceInfo.port}/${service.name}`;
+			if (!serviceProxies[service.name]) {
+				console.log(`Adding proxy for ${service.name}`);
+				const serviceProxy = createProxyMiddleware({
+					target: serviceUrl,
+					changeOrigin: false,
+				});
+				app.use(service.path, serviceProxy);
+				serviceProxies[service.name] = serviceProxy;
+			} else {
+				console.log(`Proxy for ${service.name} already exists`);
+			}
+		} else {
+			if (serviceProxies[service.name]) {
+				console.log(`Removing proxy for ${service.name}`);
+				app._router.stack = app._router.stack.filter(
+					(layer) =>
+						!(layer && layer.route && layer.route.path === service.path)
+				);
+				delete serviceProxies[service.name];
+			} else {
+				console.log(`Service ${service.name} not found in registry`);
+			}
+		}
+	}
+}, 5000);
 
 app.get("/services/:name", async (req, res) => {
 	const name = req.params.name;
