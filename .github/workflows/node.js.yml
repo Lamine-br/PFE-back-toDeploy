@@ -43,6 +43,7 @@ jobs:
       - name: Run tests for service_auth
         working-directory: ./service_authentication
         run: |
+          npm install
           npm test
 
   deploy:
