@@ -41,8 +41,6 @@ const services = [
 	// Add more services as needed
 ];
 
-let serviceProxies = {};
-
 async function createServiceProxy(service) {
 	const serviceInfo = await fetchServiceUrlFromRegistry(
 		service.name,
@@ -56,7 +54,6 @@ async function createServiceProxy(service) {
 		});
 		console.log(`Service ${service.name} URL:`, serviceUrl);
 		app.use(service.path, serviceProxy);
-		serviceProxies[service.name] = serviceProxy;
 	} else {
 		console.log(`Service ${service.name} not found in registry.`);
 	}
@@ -71,40 +68,8 @@ async function createProxies() {
 
 createProxies();
 
-// Periodic service verification every 5 seconds
-setInterval(async () => {
-	for (const service of services) {
-		const serviceInfo = await fetchServiceUrlFromRegistry(
-			service.name,
-			service.version
-		);
-		if (serviceInfo) {
-			const serviceUrl = `http://${serviceInfo.ip}:${serviceInfo.port}/${service.name}`;
-			if (!serviceProxies[service.name]) {
-				console.log(`Adding proxy for ${service.name}`);
-				const serviceProxy = createProxyMiddleware({
-					target: serviceUrl,
-					changeOrigin: false,
-				});
-				app.use(service.path, serviceProxy);
-				serviceProxies[service.name] = serviceProxy;
-			} else {
-				console.log(`Proxy for ${service.name} already exists`);
-			}
-		} else {
-			if (serviceProxies[service.name]) {
-				console.log(`Removing proxy for ${service.name}`);
-				app._router.stack = app._router.stack.filter(
-					(layer) =>
-						!(layer && layer.route && layer.route.path === service.path)
-				);
-				delete serviceProxies[service.name];
-			} else {
-				console.log(`Service ${service.name} not found in registry`);
-			}
-		}
-	}
-}, 5000);
+// Schedule createProxies to run every 5 seconds
+setInterval(createProxies, 5000);
 
 app.get("/services/:name", async (req, res) => {
 	const name = req.params.name;
