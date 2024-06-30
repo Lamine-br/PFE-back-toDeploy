@@ -26,7 +26,7 @@ service.use((req, res, next) => {
 const registerService = async (serviceName, serviceVersion, servicePort) => {
 	try {
 		const response = await axios.put(
-			`http://service-registry:31001/register/${serviceName}/${serviceVersion}/${servicePort}`
+			`http://192.168.49.2:31001/register/${serviceName}/${serviceVersion}/${servicePort}`
 		);
 		console.log(response.data); // Log the response from the registry service
 	} catch (error) {
