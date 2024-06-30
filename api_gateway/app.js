@@ -9,7 +9,7 @@ const PORT = 3000;
 app.use(cors({ origin: "*" }));
 
 app.get("/", (req, res) => {
-	res.send("Hello, Express !");
+	res.send("Hello, Express!");
 });
 
 app.use((req, res, next) => {
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 async function fetchServiceUrlFromRegistry(servicename, serviceversion) {
 	try {
 		const response = await axios.get(
-			`http://localhost:3001/find/${servicename}/${serviceversion}`
+			`http://service_registry:31001/find/${servicename}/${serviceversion}`
 		);
 		return response.data; // Assuming the response is a single service URL
 	} catch (error) {

@@ -26,7 +26,7 @@ service.use((req, res, next) => {
 const registerService = async (serviceName, serviceVersion, servicePort) => {
 	try {
 		const response = await axios.put(
-			`http://service_registry:3001/register/${serviceName}/${serviceVersion}/${servicePort}`
+			`http://service_registry:31001/register/${serviceName}/${serviceVersion}/${servicePort}`
 		);
 		console.log(response.data); // Log the response from the registry service
 	} catch (error) {
@@ -35,14 +35,14 @@ const registerService = async (serviceName, serviceVersion, servicePort) => {
 };
 
 const startRegistration = (serviceName, serviceVersion, servicePort) => {
-const interval = setInterval(async () => {
-try {
-await registerService(serviceName, serviceVersion, servicePort);
-clearInterval(interval); // Stop the interval once registration is successful
-} catch (error) {
-console.log("Retrying service registration...");
-}
-}, 5000); // Retry every 5 seconds
+	const interval = setInterval(async () => {
+		try {
+			await registerService(serviceName, serviceVersion, servicePort);
+			clearInterval(interval); // Stop the interval once registration is successful
+		} catch (error) {
+			console.log("Retrying service registration...");
+		}
+	}, 5000); // Retry every 5 seconds
 };
 
 registerService("auth", "v1", PORT);
