@@ -9,7 +9,7 @@ const PORT = 3000;
 app.use(cors({ origin: "*" }));
 
 app.get("/", (req, res) => {
-	res.send("Hello, Express 2!");
+	res.send("Hello, Express !");
 });
 
 app.use((req, res, next) => {
